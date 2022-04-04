@@ -3,10 +3,10 @@
   <groupId>gov.nsa.datawave.microservice</groupId>
   <artifactId>spring-boot-starter-datawave</artifactId>
   <versioning>
-    <release>1.6.6</release>
+    <release>1.6.7</release>
     <versions>
-      <version>1.6.6</version>
+      <version>1.6.7</version>
     </versions>
-    <lastUpdated>20220310204644</lastUpdated>
+    <lastUpdated>20220404193043</lastUpdated>
   </versioning>
 </metadata>
