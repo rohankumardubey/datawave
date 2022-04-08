@@ -19,7 +19,9 @@
     </scm>
     <properties>
         <start-class>datawave.microservice.dictionary.DictionaryService</start-class>
+        <version.accumulo>1.9.3</version.accumulo>
         <version.microservice.dictionary-api>1.2</version.microservice.dictionary-api>
+        <version.microservice.metadata-utils>1.9</version.microservice.metadata-utils>
         <version.microservice.starter>1.6.7</version.microservice.starter>
         <version.webjars.datatables>1.11.4</version.webjars.datatables>
         <version.webjars.jquery>3.6.0</version.webjars.jquery>
@@ -35,8 +37,30 @@
             </dependency>
             <dependency>
                 <groupId>gov.nsa.datawave.microservice</groupId>
+                <artifactId>metadata-utils</artifactId>
+                <version>${version.microservice.metadata-utils}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>servlet-api</artifactId>
+                        <groupId>javax.servlet</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>gov.nsa.datawave.microservice</groupId>
                 <artifactId>spring-boot-starter-datawave</artifactId>
                 <version>${version.microservice.starter}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.accumulo</groupId>
+                <artifactId>accumulo-core</artifactId>
+                <version>${version.accumulo}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>servlet-api</artifactId>
+                        <groupId>javax.servlet</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
