@@ -3,10 +3,10 @@
   <groupId>gov.nsa.datawave.microservice</groupId>
   <artifactId>accumulo-service-parent</artifactId>
   <versioning>
-    <release>2.0.0</release>
+    <release>1.3</release>
     <versions>
-      <version>2.0.0</version>
+      <version>1.3</version>
     </versions>
-    <lastUpdated>20200306150307</lastUpdated>
+    <lastUpdated>20220408140629</lastUpdated>
   </versioning>
 </metadata>
