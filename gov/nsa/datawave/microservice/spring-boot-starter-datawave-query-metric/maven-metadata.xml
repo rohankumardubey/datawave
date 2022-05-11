@@ -3,10 +3,10 @@
   <groupId>gov.nsa.datawave.microservice</groupId>
   <artifactId>spring-boot-starter-datawave-query-metric</artifactId>
   <versioning>
-    <release>1.4.16</release>
+    <release>1.4.17</release>
     <versions>
-      <version>1.4.16</version>
+      <version>1.4.17</version>
     </versions>
-    <lastUpdated>20220503201744</lastUpdated>
+    <lastUpdated>20220511181713</lastUpdated>
   </versioning>
 </metadata>
