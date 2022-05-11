@@ -3,10 +3,10 @@
   <groupId>gov.nsa.datawave.microservice</groupId>
   <artifactId>query-metric-parent</artifactId>
   <versioning>
-    <release>1.4.16</release>
+    <release>1.4.17</release>
     <versions>
-      <version>1.4.16</version>
+      <version>1.4.17</version>
     </versions>
-    <lastUpdated>20220503202215</lastUpdated>
+    <lastUpdated>20220511194847</lastUpdated>
   </versioning>
 </metadata>
