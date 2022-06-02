@@ -13,11 +13,15 @@
     <modules>
         <!--
         <module>accumulo</module>
+-->
         <module>common-util</module>
+        <!--
         <module>security</module>
+-->
         <module>common</module>
         <module>query</module>
         <module>client</module>
+        <!--
         <module>cached-results</module>
         <module>map-reduce</module>
         <module>map-reduce-status</module>
