@@ -44,6 +44,9 @@ import org.apache.commons.jexl2.parser.ParseException;
 
 import com.google.common.collect.Sets;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,16 +57,18 @@ import java.util.TreeSet;
 
 /**
  * A Jexl visitor which builds an equivalent Jexl query in a formatted manner. Formatted meaning parenthesis are added on one line, and children are added on a
- * new, indented line. Same functionality as JexlStringBuildingVisitor.java except the query is built in a formatted manner.
+ * new, indented line. Additionally, there is the option to decorate the query with added color for easier readability in terminal or on web pages. Same
+ * functionality as JexlStringBuildingVisitor.java except the query is built in a formatted manner.
  */
 public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisitor {
     protected static final String NEWLINE = System.getProperty("line.separator");
+    protected static final String DOUBLE_QUOTE = "\"";
     
     // allowed methods for composition. Nothing that mutates the collection is allowed, thus we have:
     private Set<String> allowedMethods = Sets.newHashSet("contains", "retainAll", "containsAll", "isEmpty", "size", "equals", "hashCode", "getValueForGroup",
                     "getGroupsForValue", "getValuesForGroups", "toString", "values", "min", "max", "lessThan", "greaterThan", "compareWith");
     
-    private boolean includeHTML;
+    private JexlQueryDecorator decorator;
     
     public JexlFormattedStringBuildingVisitor() {
         this(false);
@@ -71,12 +76,12 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     
     public JexlFormattedStringBuildingVisitor(boolean sortDedupeChildren) {
         this.sortDedupeChildren = sortDedupeChildren;
-        this.includeHTML = false;
+        this.decorator = new EmptyDecorator();
     }
     
-    public JexlFormattedStringBuildingVisitor(boolean sortDedupeChildren, boolean includeHTML) {
+    public JexlFormattedStringBuildingVisitor(boolean sortDedupeChildren, JexlQueryDecorator decorator) {
         this.sortDedupeChildren = sortDedupeChildren;
-        this.includeHTML = includeHTML;
+        this.decorator = decorator;
     }
     
     /**
@@ -129,7 +134,8 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
      * @return
      */
     private static boolean containsOnly(String str, char ch) {
-        str = str.replaceAll("<[^>]*>", ""); // remove all existing html from the string
+        str = str.replaceAll("<[^>]*>", ""); // remove all existing html from the string (if present)
+        str = removeAllBashColoring(str);
         
         return str.matches("^[" + ch + "]+$");
     }
@@ -141,9 +147,27 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
      * @return
      */
     private static boolean closeParensFollowedByAndOr(String str) {
-        str = str.replaceAll("<[^>]*>", ""); // remove all existing html from the string
+        str = str.replaceAll("<[^>]*>", ""); // remove all existing html from the string (if present)
+        str = removeAllBashColoring(str);
         
         return str.matches("^([)]+ (&&|\\|\\|) )$");
+    }
+    
+    /**
+     * Removes all bash coloring from the given string and returns it
+     * 
+     * @param str
+     * @return
+     */
+    private static String removeAllBashColoring(String str) {
+        int indexStartOfColor = str.indexOf("\\e");
+        while (indexStartOfColor != -1) {
+            int indexEndOfColor = str.indexOf("m", indexStartOfColor);
+            str = str.replace(str.substring(indexStartOfColor, indexEndOfColor + 1), ""); // remove the existing bash color formatting from the string (if
+                                                                                          // present)
+            indexStartOfColor = str.indexOf("\\e");
+        }
+        return str;
     }
     
     /**
@@ -189,7 +213,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     }
     
     /**
-     * Build a String that is the equivalent JEXL query.
+     * Build a String that is the equivalent JEXL query formatted on multiple lines. No added Bash or HTML coloring.
      * 
      * @param script
      *            An ASTJexlScript
@@ -199,6 +223,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
      * @return
      */
     public static String buildQuery(JexlNode script, boolean sortDedupeChildren) {
+        
         JexlFormattedStringBuildingVisitor visitor = new JexlFormattedStringBuildingVisitor(sortDedupeChildren);
         
         String s = null;
@@ -228,7 +253,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     }
     
     /**
-     * Build a String that is the equivalent JEXL query.
+     * Build a String that is the equivalent JEXL query formatted on multiple lines. No added Bash or HTML coloring.
      *
      * @param script
      *            An ASTJexlScript
@@ -239,7 +264,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     }
     
     /**
-     * Build a String that is the equivalent JEXL query.
+     * Build a String that is the equivalent JEXL query with HTML color styling and formatted on multiple lines.
      * 
      * @param script
      *            An ASTJexlScript
@@ -248,8 +273,8 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
      *            beforehand for maximum 'dedupeage'.
      * @return
      */
-    public static String buildQueryWithoutParse(JexlNode script, boolean sortDedupeChildren) {
-        JexlFormattedStringBuildingVisitor visitor = new JexlFormattedStringBuildingVisitor(sortDedupeChildren);
+    public static String buildQueryWithHtmlFormatting(JexlNode script, boolean sortDedupeChildren) {
+        JexlFormattedStringBuildingVisitor visitor = new JexlFormattedStringBuildingVisitor(sortDedupeChildren, new HtmlDecorator());
         
         String s = null;
         try {
@@ -264,25 +289,28 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     }
     
     /**
-     * Build a String that is the equivalent JEXL query.
+     * Build a String that is the equivalent JEXL query with HTML color styling and formatted on multiple lines.
      *
      * @param script
      *            An ASTJexlScript
      * @return
      */
-    public static String buildQueryWithoutParse(JexlNode script) {
-        return buildQueryWithoutParse(script, false);
+    public static String buildQueryWithHtmlFormatting(JexlNode script) {
+        return buildQueryWithHtmlFormatting(script, false);
     }
     
     /**
-     * Build a String that is the equivalent JEXL query with added HTML for styling of Query elements.
+     * Build a String that is the equivalent JEXL query with Bash color styling and formatted on multiple lines.
      * 
      * @param script
      *            An ASTJexlScript
+     * @param sortDedupeChildren
+     *            Whether or not to sort the child nodes, and dedupe them. Note: Only siblings (children with the same parent node) will be deduped. Flatten
+     *            beforehand for maximum 'dedupeage'.
      * @return
      */
-    public static String buildQueryWithHTML(JexlNode script, boolean sortDedupeChildren) {
-        JexlFormattedStringBuildingVisitor visitor = new JexlFormattedStringBuildingVisitor(sortDedupeChildren, true);
+    public static String buildQueryWithBashFormatting(JexlNode script, boolean sortDedupeChildren) {
+        JexlFormattedStringBuildingVisitor visitor = new JexlFormattedStringBuildingVisitor(sortDedupeChildren, new BashDecorator());
         
         String s = null;
         try {
@@ -297,14 +325,14 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     }
     
     /**
-     * Build a String that is the equivalent JEXL query with added HTML for styling of Query elements.
-     * 
+     * Build a String that is the equivalent JEXL query with Bash color styling and formatted on multiple lines.
+     *
      * @param script
      *            An ASTJexlScript
      * @return
      */
-    public static String buildQueryWithHTML(JexlNode script) {
-        return buildQueryWithHTML(script, false);
+    public static String buildQueryWithBashFormatting(JexlNode script) {
+        return buildQueryWithBashFormatting(script, false);
     }
     
     @Override
@@ -326,10 +354,8 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
             childStrings.add(childSB.toString());
             childSB.setLength(0);
         }
-        if (includeHTML)
-            sb.append(String.join("<span class=\"or-op\"> || </span>" + NEWLINE, childStrings));
-        else
-            sb.append(String.join(" || " + NEWLINE, childStrings));
+        
+        decorator.apply(sb, node, childStrings);
         
         if (wrapIt)
             sb.append(")");
@@ -362,10 +388,8 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         for (String childString : childStrings) {
             childStringsFormatted.add(needNewLines ? childString : childString.replace(NEWLINE, ""));
         }
-        if (includeHTML)
-            sb.append(String.join("<span class=\"and-op\"> && </span>" + (needNewLines ? NEWLINE : ""), childStringsFormatted));
-        else
-            sb.append(String.join(" && " + (needNewLines ? NEWLINE : ""), childStringsFormatted));
+        
+        decorator.apply(sb, node, childStringsFormatted, needNewLines);
         
         if (wrapIt)
             sb.append(")");
@@ -385,10 +409,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"equal-op\"> == </span>");
-        else
-            sb.append(" == ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -407,10 +428,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"not-equal-op\"> != </span>");
-        else
-            sb.append(" != ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -429,10 +447,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"less-than-op\"> < </span>");
-        else
-            sb.append(" < ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -451,10 +466,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"greater-than-op\"> > </span>");
-        else
-            sb.append(" > ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -473,10 +485,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"less-than-equal-op\"> <= </span>");
-        else
-            sb.append(" <= ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -495,10 +504,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"greater-than-equal-op\"> >= </span>");
-        else
-            sb.append(" >= ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -517,10 +523,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"ER-op\"> =~ </span>");
-        else
-            sb.append(" =~ ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -539,10 +542,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         
         node.jjtGetChild(0).jjtAccept(this, sb);
         
-        if (includeHTML)
-            sb.append("<span class=\"NR-op\"> !~ </span>");
-        else
-            sb.append(" !~ ");
+        decorator.apply(sb, node);
         
         node.jjtGetChild(1).jjtAccept(this, sb);
         
@@ -553,10 +553,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTNotNode node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"not-op\">!</span>");
-        else
-            sb.append("!");
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         
@@ -567,21 +564,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTIdentifier node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        // We want to remove the $ if present and only replace it when necessary
-        String fieldName = JexlASTHelper.rebuildIdentifier(JexlASTHelper.deconstructIdentifier(node.image));
-        
-        // Go up the tree until reaching null or an AND node. This allows us to determine if this is a Query Property Marker
-        JexlNode parent = node;
-        while (parent != null && !(parent instanceof ASTAndNode)) {
-            parent = parent.jjtGetParent();
-        }
-        
-        if (includeHTML && QueryPropertyMarker.findInstance(parent).isAnyType())
-            sb.append(String.format("<span class=\"query-property-marker\">%s</span>", fieldName));
-        else if (includeHTML)
-            sb.append(String.format("<span class=\"field\">%s</span>", fieldName));
-        else
-            sb.append(fieldName);
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         
@@ -592,10 +575,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTNullLiteral node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"null-value\">null</span>");
-        else
-            sb.append("null");
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -605,10 +585,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTTrueNode node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"boolean-value\">true</span>");
-        else
-            sb.append("true");
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -618,10 +595,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTFalseNode node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"boolean-value\">false</span>");
-        else
-            sb.append("false");
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -665,10 +639,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
             literal = builder.toString();
         }
         
-        if (includeHTML)
-            sb.append("<span class=\"string-value\">").append(STRING_QUOTE).append(literal).append(STRING_QUOTE).append("</span>");
-        else
-            sb.append(STRING_QUOTE).append(literal).append(STRING_QUOTE);
+        decorator.apply(sb, node, literal);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -687,20 +658,25 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
                 sb.append(", ");
             }
             
-            if (includeHTML && i == 0)
-                sb.append("<span class=\"function-namespace\">");
-            if (includeHTML && i == 1)
-                sb.append("<span class=\"function\">");
+            decorator.apply(sb, node, i);
             
             node.jjtGetChild(i).jjtAccept(this, sb);
             
-            if (includeHTML && (i == 0 || i == 1)) {
-                // Remove the child <span> element
-                String strToRem = "<span class=\"field\">";
-                
-                int indexOfStr = sb.indexOf(strToRem);
-                if (indexOfStr != -1) {
-                    sb.delete(indexOfStr, indexOfStr + strToRem.length());
+            if (i == 0 || i == 1) {
+                if (decorator instanceof HtmlDecorator) {
+                    // Remove the child <span> element if present (don't remove </span>)
+                    String strToRem = "<span class=\"field\">";
+                    
+                    int indexOfStr = sb.indexOf(strToRem);
+                    if (indexOfStr != -1) {
+                        sb.delete(indexOfStr, indexOfStr + strToRem.length());
+                    }
+                } else if (decorator instanceof BashDecorator) {
+                    // Remove the field coloring given to the function namespace (if i = 0) and remove the field coloring given to the function (if i = 1)
+                    int indexOfStr = sb.indexOf(BashDecorator.FIELD_COLOR);
+                    if (indexOfStr != -1) {
+                        sb.delete(indexOfStr, sb.indexOf("m", indexOfStr) + 1);
+                    }
                 }
             }
         }
@@ -763,10 +739,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         methodStringBuilder.append(argumentStringBuilder);
         methodStringBuilder.append(")"); // close parens in method
         
-        if (includeHTML)
-            sb.append(String.format("<span class=\"method\">%s</span>", methodStringBuilder));
-        else
-            sb.append(methodStringBuilder);
+        decorator.apply(sb, node, methodStringBuilder);
         
         return sb;
     }
@@ -775,10 +748,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTNumberLiteral node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append(String.format("<span class=\"numeric-value\">%s</span>", node.image));
-        else
-            sb.append(node.image);
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -824,10 +794,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTAdditiveOperator node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"add-op\">" + node.image + "</span>");
-        else
-            sb.append(node.image);
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -847,10 +814,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTSizeMethod node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"method\">.size() </span>");
-        else
-            sb.append(".size() ");
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
@@ -863,10 +827,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         for (int i = 0; i < numChildren; i++) {
             node.jjtGetChild(i).jjtAccept(this, sb);
             if (i < numChildren - 1) {
-                if (includeHTML)
-                    sb.append("<span class=\"mul-op\"> * </span>");
-                else
-                    sb.append(" * ");
+                decorator.apply(sb, node);
             }
         }
         
@@ -880,10 +841,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         for (int i = 0; i < numChildren; i++) {
             node.jjtGetChild(i).jjtAccept(this, sb);
             if (i < numChildren - 1) {
-                if (includeHTML)
-                    sb.append("<span class=\"div-op\"> / </span>");
-                else
-                    sb.append(" / ");
+                decorator.apply(sb, node);
             }
         }
         
@@ -897,10 +855,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
         for (int i = 0; i < numChildren; i++) {
             node.jjtGetChild(i).jjtAccept(this, sb);
             if (i < numChildren - 1) {
-                if (includeHTML)
-                    sb.append("<span class=\"mod-op\"> % </span>");
-                else
-                    sb.append(" % ");
+                decorator.apply(sb, node);
             }
         }
         
@@ -911,24 +866,15 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTAssignment node, Object data) {
         boolean requiresParens = !(node.jjtGetParent() instanceof ASTReferenceExpression);
         StringBuilder sb = (StringBuilder) data;
-        
-        if (includeHTML)
-            sb.append("<span class=\"assign-op\">");
-        
         if (requiresParens)
             sb.append('(');
         for (int i = 0; i < node.jjtGetNumChildren(); ++i) {
             node.jjtGetChild(i).jjtAccept(this, sb);
-            sb.append(" = ");
+            decorator.apply(sb, node, i);
         }
-        sb.setLength(sb.length() - " = ".length());
         if (requiresParens) {
             sb.append(')');
         }
-        
-        if (includeHTML)
-            sb.append("</span>");
-        
         return sb;
     }
     
@@ -936,15 +882,19 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
     public Object visit(ASTUnaryMinusNode node, Object data) {
         StringBuilder sb = (StringBuilder) data;
         
-        if (includeHTML)
-            sb.append("<span class=\"unary-minus\">-</span>");
-        else
-            sb.append("-");
+        decorator.apply(sb, node);
         
         node.childrenAccept(this, sb);
         return sb;
     }
     
+    /**
+     * Returns a new list of QueryMetrics which is identical to the given list except the query and query plan for each metric are formatted according to
+     * {@link #buildQueryWithHtmlFormatting(JexlNode) buildQueryWithHtmlFormatting}
+     * 
+     * @param metrics
+     * @return
+     */
     public static List<QueryMetric> formatMetrics(List<QueryMetric> metrics) {
         List<QueryMetric> updatedMetrics = new ArrayList<QueryMetric>();
         
@@ -959,7 +909,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
             if (query != null && isJexlQuery(metric.getParameters())) {
                 try {
                     queryNode = JexlASTHelper.parseJexlQuery(query);
-                    updatedMetric.setQuery(buildQueryWithHTML(queryNode));
+                    updatedMetric.setQuery(buildQueryWithHtmlFormatting(queryNode));
                 } catch (ParseException e) {
                     log.error("Could not parse JEXL AST after performing transformations to run the query", e);
                     
@@ -972,7 +922,7 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
             if (plan != null) {
                 try {
                     planNode = JexlASTHelper.parseJexlQuery(plan);
-                    updatedMetric.setPlan(buildQueryWithHTML(planNode));
+                    updatedMetric.setPlan(buildQueryWithHtmlFormatting(planNode));
                 } catch (ParseException e) {
                     log.error("Could not parse JEXL AST after performing transformations to run the query", e);
                     
@@ -1002,9 +952,18 @@ public class JexlFormattedStringBuildingVisitor extends JexlStringBuildingVisito
             query = args[0];
         }
         try {
-            System.out.println(JexlFormattedStringBuildingVisitor.buildQuery(JexlASTHelper.parseJexlQuery(query)));
+            String echoCommand = "echo " + DOUBLE_QUOTE + buildQueryWithBashFormatting(JexlASTHelper.parseJexlQuery(query)) + DOUBLE_QUOTE;
+            String[] commands = {"sh", "-c", echoCommand};
+            Process process = Runtime.getRuntime().exec(commands);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
         } catch (ParseException e) {
             System.out.println("Failure to parse given query.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
