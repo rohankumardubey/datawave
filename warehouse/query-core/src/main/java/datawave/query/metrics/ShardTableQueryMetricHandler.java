@@ -53,7 +53,11 @@ import datawave.microservice.querymetric.QueryMetricListResponse;
 import datawave.microservice.querymetric.QueryMetricsDetailListResponse;
 import datawave.microservice.querymetric.QueryMetricsSummaryResponse;
 import datawave.query.iterator.QueryOptions;
-import datawave.query.jexl.visitors.JexlFormattedStringBuildingVisitor;
+import datawave.query.jexl.JexlASTHelper;
+import datawave.query.jexl.visitors.HtmlDecorator;
+import datawave.query.jexl.visitors.JexlQueryDecorator;
+import datawave.query.jexl.visitors.JexlStringBuildingVisitor;
+import datawave.query.jexl.visitors.PrintingVisitor;
 import datawave.query.language.parser.jexl.LuceneToJexlQueryParser;
 import datawave.query.map.SimpleQueryGeometryHandler;
 import datawave.security.authorization.DatawavePrincipal;
@@ -90,6 +94,7 @@ import org.apache.accumulo.core.data.Value;
 import org.apache.accumulo.core.security.ColumnVisibility;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.map.LRUMap;
+import org.apache.commons.jexl2.parser.JexlNode;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.deltaspike.core.api.config.ConfigProperty;
@@ -550,7 +555,7 @@ public class ShardTableQueryMetricHandler extends BaseQueryMetricHandler<QueryMe
             query.setParameters(ImmutableMap.of(QueryOptions.INCLUDE_GROUPING_CONTEXT, "true"));
             List<QueryMetric> queryMetrics = getQueryMetrics(response, query, datawavePrincipal);
             
-            JexlFormattedStringBuildingVisitor.formatMetrics(queryMetrics);
+            formatMetrics(queryMetrics);
             
             response.setResult(queryMetrics);
             
@@ -560,6 +565,53 @@ public class ShardTableQueryMetricHandler extends BaseQueryMetricHandler<QueryMe
         }
         
         return response;
+    }
+    
+    /**
+     * Returns a new list of QueryMetrics which is identical to the given list except the query and query plan for each metric are formatted according to
+     * {@link datawave.query.jexl.visitors.JexlStringBuildingVisitor#buildDecoratedQuery buildDecoratedQuery} with an
+     * {@link datawave.query.jexl.visitors.HtmlDecorator HtmlDecorator}
+     * 
+     * @param metrics
+     */
+    public static void formatMetrics(List<? extends BaseQueryMetric> metrics) {
+        // For each metric, update the query to be formatted (if applicable) and update
+        // the plan to be formatted
+        for (BaseQueryMetric metric : metrics) {
+            JexlNode queryNode = null, planNode = null;
+            String query = metric.getQuery();
+            String plan = metric.getPlan();
+            // If it is a JEXL query, set the query to be formatted
+            if (query != null && isJexlQuery(metric.getParameters())) {
+                try {
+                    queryNode = JexlASTHelper.parseJexlQuery(query);
+                    metric.setQuery(JexlStringBuildingVisitor.buildDecoratedQuery(queryNode, false, new HtmlDecorator()));
+                } catch (org.apache.commons.jexl2.parser.ParseException e) {
+                    log.error("Could not parse JEXL AST after performing transformations to run the query", e);
+                    
+                    if (log.isTraceEnabled()) {
+                        log.trace(PrintingVisitor.formattedQueryString(queryNode));
+                    }
+                }
+            }
+            // Format the plan (plan will always be a JEXL query)
+            if (plan != null) {
+                try {
+                    planNode = JexlASTHelper.parseJexlQuery(plan);
+                    metric.setPlan(JexlStringBuildingVisitor.buildDecoratedQuery(planNode, false, new HtmlDecorator()));
+                } catch (org.apache.commons.jexl2.parser.ParseException e) {
+                    log.error("Could not parse JEXL AST after performing transformations to run the query", e);
+                    
+                    if (log.isTraceEnabled()) {
+                        log.trace(PrintingVisitor.formattedQueryString(planNode));
+                    }
+                }
+            }
+        }
+    }
+    
+    private static boolean isJexlQuery(Set<Parameter> params) {
+        return params.stream().anyMatch(p -> p.getParameterName().equals("query.syntax") && p.getParameterValue().equals("JEXL"));
     }
     
     public QueryMetric toMetric(datawave.webservice.query.result.event.EventBase event) {
