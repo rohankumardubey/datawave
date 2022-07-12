@@ -177,7 +177,7 @@ public class ContentFunctionsTest {
     }
     
     private void assertPhraseOffsetsEmpty() {
-        Assert.assertTrue("Expected empty phrase offset map", termOffSetMap.getPhraseIndexes().isEmpty());
+        Assert.assertTrue("Expected empty phrase offset map", termOffSetMap.getPhraseIndexes() == null || termOffSetMap.getPhraseIndexes().isEmpty());
     }
     
     @Test
@@ -191,6 +191,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -212,6 +214,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("a", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t1)));
         termOffSetMap.putTermFrequencyList("b", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t2)));
         termOffSetMap.putTermFrequencyList("c", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -233,6 +237,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("a", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t1)));
         termOffSetMap.putTermFrequencyList("b", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t2)));
         termOffSetMap.putTermFrequencyList("c", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -254,6 +260,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("a", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t1)));
         termOffSetMap.putTermFrequencyList("b", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t2)));
         termOffSetMap.putTermFrequencyList("c", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -275,6 +283,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("a", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t1)));
         termOffSetMap.putTermFrequencyList("b", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t2)));
         termOffSetMap.putTermFrequencyList("c", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), t3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -297,6 +307,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", false, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", false, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -316,6 +328,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog's", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -346,6 +360,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -403,6 +419,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -422,6 +440,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -445,6 +465,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -467,6 +489,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -489,6 +513,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -511,6 +537,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -530,6 +558,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -549,6 +579,7 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -568,6 +599,7 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -587,7 +619,7 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
-        
+        termOffSetMap.setGatherPhraseOffsets(true);
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
         
@@ -608,6 +640,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -629,6 +663,7 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -648,6 +683,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -667,6 +704,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -686,6 +725,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -705,6 +746,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -726,6 +769,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -747,6 +792,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -768,6 +815,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -787,6 +836,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -806,6 +857,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -827,6 +880,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -848,6 +903,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -869,6 +926,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -890,6 +949,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("fish", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -909,6 +970,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -928,6 +991,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -945,6 +1010,8 @@ public class ContentFunctionsTest {
         list1 = asList(1, 3, 5);
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -962,6 +1029,8 @@ public class ContentFunctionsTest {
         list1 = asList(1, 2, 5);
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -979,6 +1048,8 @@ public class ContentFunctionsTest {
         list1 = asList(1, 4, 5);
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -996,6 +1067,8 @@ public class ContentFunctionsTest {
         list1 = asList(1, 4);
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1013,6 +1086,8 @@ public class ContentFunctionsTest {
         list1 = asList(1, 3);
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1030,6 +1105,8 @@ public class ContentFunctionsTest {
         list1 = asList(Arrays.asList(1, 4), Arrays.asList(0, 1));
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1049,6 +1126,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1072,6 +1151,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1093,6 +1174,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1114,6 +1197,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1135,6 +1220,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1156,6 +1243,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1177,6 +1266,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1198,6 +1289,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1219,6 +1312,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1238,6 +1333,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1257,6 +1354,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1278,6 +1377,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("rat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1297,6 +1398,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1316,6 +1419,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1335,6 +1440,8 @@ public class ContentFunctionsTest {
         
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1359,6 +1466,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("bat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1384,6 +1493,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("bat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1409,6 +1520,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("bat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         Object o = expr.evaluate(context);
@@ -1431,6 +1544,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("bat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId + ".1"), list3)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         
@@ -1574,6 +1689,8 @@ public class ContentFunctionsTest {
         termOffSetMap.putTermFrequencyList("foo", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
         termOffSetMap.putTermFrequencyList("bar", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
         termOffSetMap.putTermFrequencyList("foo", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         
@@ -1599,6 +1716,8 @@ public class ContentFunctionsTest {
                         "car",
                         new TermFrequencyList(Maps.immutableEntry(new Zone("BODY", true, eventId), list3), Maps.immutableEntry(new Zone("META", true, eventId),
                                         list4)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         context.set("BODY", Arrays.asList("foo", "bar", "car"));
@@ -1626,6 +1745,8 @@ public class ContentFunctionsTest {
                         "car",
                         new TermFrequencyList(Maps.immutableEntry(new Zone("BODY", true, eventId), list3), Maps.immutableEntry(new Zone("META", true, eventId),
                                         list4)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         context.set("BODY", Arrays.asList("foo", "bar", "car"));
@@ -1653,6 +1774,8 @@ public class ContentFunctionsTest {
                         "car",
                         new TermFrequencyList(Maps.immutableEntry(new Zone("BODY", true, eventId), list3), Maps.immutableEntry(new Zone("META", true, eventId),
                                         list4)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
         
         context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
         context.set("BODY", Arrays.asList("foo", "bar", "car"));
@@ -1824,5 +1947,53 @@ public class ContentFunctionsTest {
         
         // Ensure that we get the hit if we evaluate null zone
         Assert.assertEquals(Collections.singleton(zone2.getZone()), ContentFunctions.phrase((Object) null, termOffsetMap, terms));
+    }
+    
+    /**
+     * Verify that if gatherPhraseOffsets is false, that even when there is a phrase index for matching excerpt field, it is not recorded.
+     */
+    @Test
+    public void testGatherPhraseOffsetsIsFalse() {
+        String query = buildFunction(ContentFunctions.CONTENT_WITHIN_FUNCTION_NAME, "1", Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, "'dog'", "'cat'");
+        Expression expr = engine.createExpression(query);
+        
+        List<TermWeightPosition> list1, list2;
+        list1 = asList(1);
+        list2 = asList(2);
+        
+        termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(false);
+        termOffSetMap.setExcerptFields(Collections.singleton("CONTENT"));
+        
+        context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
+        Object o = expr.evaluate(context);
+        
+        Assert.assertTrue(expect(o, true));
+        assertPhraseOffsetsEmpty();
+    }
+    
+    /**
+     * Verify that if gatherPhraseOffsets is true, if a phrase index for is found for a non-excerpt field, it is not recorded.
+     */
+    @Test
+    public void testNonMatchingExcerptFields() {
+        String query = buildFunction(ContentFunctions.CONTENT_WITHIN_FUNCTION_NAME, "1", Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, "'dog'", "'cat'");
+        Expression expr = engine.createExpression(query);
+        
+        List<TermWeightPosition> list1, list2;
+        list1 = asList(1);
+        list2 = asList(2);
+        
+        termOffSetMap.putTermFrequencyList("dog", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list1)));
+        termOffSetMap.putTermFrequencyList("cat", new TermFrequencyList(Maps.immutableEntry(new Zone("CONTENT", true, eventId), list2)));
+        termOffSetMap.setGatherPhraseOffsets(true);
+        termOffSetMap.setExcerptFields(Collections.singleton("BODY"));
+        
+        context.set(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME, termOffSetMap);
+        Object o = expr.evaluate(context);
+        
+        Assert.assertTrue(expect(o, true));
+        assertPhraseOffsetsEmpty();
     }
 }

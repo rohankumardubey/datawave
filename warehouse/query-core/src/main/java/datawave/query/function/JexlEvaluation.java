@@ -26,6 +26,8 @@ import datawave.query.jexl.HitListArithmetic;
 import datawave.query.jexl.DatawaveJexlEngine;
 import datawave.query.util.Tuple3;
 
+import java.util.Set;
+
 public class JexlEvaluation implements Predicate<Tuple3<Key,Document,DatawaveJexlContext>> {
     private static final Logger log = Logger.getLogger(JexlEvaluation.class);
     
@@ -37,6 +39,9 @@ public class JexlEvaluation implements Predicate<Tuple3<Key,Document,DatawaveJex
     
     // do we need to gather phrase offsets
     private boolean gatherPhraseOffsets = false;
+    
+    // The set of fields for which we should gather phrase offsets for.
+    private Set<String> phraseOffsetFields;
     
     /**
      * Compiled and flattened jexl script
@@ -81,6 +86,7 @@ public class JexlEvaluation implements Predicate<Tuple3<Key,Document,DatawaveJex
         TermOffsetMap termOffsetMap = (TermOffsetMap) input.third().get(Constants.TERM_OFFSET_MAP_JEXL_VARIABLE_NAME);
         if (termOffsetMap != null && isGatherPhraseOffsets() && arithmetic instanceof HitListArithmetic) {
             termOffsetMap.setGatherPhraseOffsets(true);
+            termOffsetMap.setExcerptFields(phraseOffsetFields);
         }
         
         // now evaluate
@@ -157,4 +163,11 @@ public class JexlEvaluation implements Predicate<Tuple3<Key,Document,DatawaveJex
         this.gatherPhraseOffsets = gatherPhraseOffsets;
     }
     
+    public Set<String> getPhraseOffsetFields() {
+        return phraseOffsetFields;
+    }
+    
+    public void setPhraseOffsetFields(Set<String> phraseOffsetFields) {
+        this.phraseOffsetFields = phraseOffsetFields;
+    }
 }
