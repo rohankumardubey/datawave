@@ -3,10 +3,10 @@
   <groupId>gov.nsa.datawave.microservice</groupId>
   <artifactId>query-metric-service</artifactId>
   <versioning>
-    <release>1.5.4</release>
+    <release>1.5.5</release>
     <versions>
-      <version>1.5.4</version>
+      <version>1.5.5</version>
     </versions>
-    <lastUpdated>20220608170205</lastUpdated>
+    <lastUpdated>20220914171122</lastUpdated>
   </versioning>
 </metadata>
