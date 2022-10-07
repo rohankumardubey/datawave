@@ -286,6 +286,7 @@ public class QueryExecutorBeanTest {
         EasyMock.expect(logic.containsDNWithAccess(dnList)).andReturn(true);
         EasyMock.expect(logic.getMaxPageSize()).andReturn(0);
         EasyMock.expect(logic.getCollectQueryMetrics()).andReturn(Boolean.FALSE);
+        EasyMock.expect(logic.isLongRunningQuery()).andReturn(false);
         EasyMock.expect(logic.getResultLimit(q.getDnList())).andReturn(-1L);
         EasyMock.expect(logic.getMaxResults()).andReturn(-1L);
         PowerMock.replayAll();
@@ -457,7 +458,7 @@ public class QueryExecutorBeanTest {
                                     .append(this.getNextCount(), other.getNextCount()).append(this.getSeekCount(), other.getSeekCount())
                                     .append(this.getYieldCount(), other.getYieldCount()).append(this.getDocRanges(), other.getDocRanges())
                                     .append(this.getFiRanges(), other.getFiRanges()).append(this.getPlan(), other.getPlan())
-                                    .append(this.getVersion(), other.getVersion()).append(this.getLoginTime(), other.getLoginTime())
+                                    .append(this.getVersionMap(), other.getVersionMap()).append(this.getLoginTime(), other.getLoginTime())
                                     .append(this.getPredictions(), other.getPredictions()).isEquals();
                 } else {
                     return false;
@@ -690,6 +691,7 @@ public class QueryExecutorBeanTest {
         EasyMock.expect(logic.getMaxPageSize()).andReturn(0);
         EasyMock.expect(logic.getAuditType(q)).andReturn(AuditType.NONE);
         EasyMock.expect(logic.getConnPoolName()).andReturn("connPool1");
+        EasyMock.expect(logic.isLongRunningQuery()).andReturn(false);
         EasyMock.expect(logic.getResultLimit(eq(q.getDnList()))).andReturn(-1L).anyTimes();
         EasyMock.expect(logic.getMaxResults()).andReturn(-1L).anyTimes();
         
