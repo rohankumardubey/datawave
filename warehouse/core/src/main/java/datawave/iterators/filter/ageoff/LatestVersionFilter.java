@@ -43,11 +43,11 @@ import org.apache.log4j.Logger;
 public class LatestVersionFilter extends Filter {
     private static final Logger log = Logger.getLogger(LatestVersionFilter.class);
 
-    private static final String DATATYPE_LIST_OPTION_NAME = "dataTypes";
-    private static final String DATATYPE_MODE_OPTION_NAME = "mode";
+    static final String DATATYPE_LIST_OPTION_NAME = "dataTypes";
+    static final String DATATYPE_MODE_OPTION_NAME = "mode";
     private static final String DATATYPE_TIMESTAMP_PROPERTY_NAME_PREFIX = "table.custom.timestamp.current.";
     private static final String IS_INDEX_TABLE_PROPERTY_NAME = "table.custom." + AgeOffConfigParams.IS_INDEX_TABLE;
-    private static final String IS_INDEX_TABLE_OPTION_NAME = AgeOffConfigParams.IS_INDEX_TABLE;
+    static final String IS_INDEX_TABLE_OPTION_NAME = AgeOffConfigParams.IS_INDEX_TABLE;
 
     // Index table keys are parsed differently to extract the DataType
     protected boolean isIndexTable;
@@ -56,8 +56,12 @@ public class LatestVersionFilter extends Filter {
     protected Map<ByteSequence, VersionFilterConfiguration> dataTypeConfigurations = null;
 
     // Iterator Scope used only in failure case to protect data
-    private boolean isScanScope;
+    @VisibleForTesting
+    boolean isScanScope;
 
+    public LatestVersionFilter() {
+        super();
+    }
     // todo test
     /**
      * @param key parsed for dataType, timestamp examined
@@ -67,7 +71,7 @@ public class LatestVersionFilter extends Filter {
     @Override
     public boolean accept(Key key, Value value) {
         // parse dataType from key
-        ByteSequence dataType = DataTypeAgeOffFilter.parseDataType(key, this.isIndexTable);
+        ByteSequence dataType = DataTypeParser.parseKey(key, this.isIndexTable);
 
         // determine if dataType is configured for filtering
         VersionFilterConfiguration filterConfiguration = dataTypeConfigurations.get(dataType);
@@ -123,14 +127,14 @@ public class LatestVersionFilter extends Filter {
         this.dataTypeConfigurations = gatherDataTypeConfigurations(options, iterEnv);
     }
 
-    // todo test
     /**
      * Examines the Map of iterator options and IteratorEnvironment to create a mapping between data types and their filter configurations
      * @param options iterator options
      * @param iterEnv iterator environment
      * @return map containing dataType -> filter configuration for its data
      */
-    private Map<ByteSequence, VersionFilterConfiguration> gatherDataTypeConfigurations(Map<String, String> options, IteratorEnvironment iterEnv) {
+    @VisibleForTesting
+    Map<ByteSequence, VersionFilterConfiguration> gatherDataTypeConfigurations(Map<String, String> options, IteratorEnvironment iterEnv) {
         Map<ByteSequence, VersionFilterConfiguration> configurationsMap = new HashMap<>();
 
         String dataTypeListOptionValue = options.get(DATATYPE_LIST_OPTION_NAME);
@@ -141,32 +145,31 @@ public class LatestVersionFilter extends Filter {
 
         String[] dataTypes = StringUtils.split(dataTypeListOptionValue, ",");
         for (String dataTypeStr : dataTypes) {
-            if (Strings.isNullOrEmpty(dataTypeStr)) {
-                log.trace("Invalid dataType found in " + DATATYPE_LIST_OPTION_NAME + "=" + dataTypeListOptionValue);
-                break;
+            if (null == dataTypeStr || dataTypeStr.trim().length() == 0) {
+                log.warn("Invalid dataType found in " + DATATYPE_LIST_OPTION_NAME + "=" + dataTypeListOptionValue);
+                continue;
             }
 
             ByteSequence dataType = new ArrayByteSequence(dataTypeStr.trim().getBytes());
             VersionFilterConfiguration filterConfiguration = createFilterConfiguration(options, iterEnv, dataType);
             configurationsMap.put(dataType, filterConfiguration);
-
-
         }
+
         return configurationsMap;
     }
 
-    // todo test
     /**
      * @param options iterator options
      * @param iterEnv iterator environment
      * @param dataType data type to configure
      * @return the version filter configuration for the provided data type
      */
-    private VersionFilterConfiguration createFilterConfiguration(Map<String, String> options, IteratorEnvironment iterEnv, ByteSequence dataType) {
+    @VisibleForTesting
+    VersionFilterConfiguration createFilterConfiguration(Map<String, String> options, IteratorEnvironment iterEnv, ByteSequence dataType) {
         VersionFilterConfiguration filterConfiguration = new VersionFilterConfiguration();
 
         // set mode
-        String dataTypeMode = options.get(DATATYPE_MODE_OPTION_NAME);
+        String dataTypeMode = (null != options) ? options.get(dataType + "." + DATATYPE_MODE_OPTION_NAME) : null;
         filterConfiguration.mode = Mode.parseOptionValue(dataTypeMode);
 
         // set version timestamp
@@ -175,13 +178,20 @@ public class LatestVersionFilter extends Filter {
         return filterConfiguration;
     }
 
-    // todo test
     /**
      * @param iterEnv iterator environment
      * @param dataType data type to lookup
      * @return timestamp version for provided datatype, in millis since epoch
      */
-    private long getTimestampVersion(IteratorEnvironment iterEnv, ByteSequence dataType) {
+    long getTimestampVersion(IteratorEnvironment iterEnv, ByteSequence dataType) {
+        if (null == dataType || 0 == dataType.length()) {
+            log.warn("dataType is null or empty");
+            return 0;
+        } else if (null == iterEnv || null == iterEnv.getConfig()) {
+            log.warn("Problem evaluating AccumuloConfiguration");
+            return 0;
+        }
+
         String timestampVersionStr = iterEnv.getConfig().get(DATATYPE_TIMESTAMP_PROPERTY_NAME_PREFIX + dataType);
         if (Strings.isNullOrEmpty(timestampVersionStr)) {
             log.warn("No AccumuloConfiguration property value found in IteratorEnvironment for " + DATATYPE_TIMESTAMP_PROPERTY_NAME_PREFIX + dataType);
@@ -195,13 +205,13 @@ public class LatestVersionFilter extends Filter {
         return 0; // default
     }
 
-    // todo test
     /**
      * @param options options for the iterator
      * @param iterEnv iterator environment which includes an Accumulo Configuration with table properties
      * @return true if either the options or the iteratorEnvironment configuration indicate the filter is examining an index table
      */
-    private boolean extractIndexTableStatus(Map<String, String> options, IteratorEnvironment iterEnv) {
+    @VisibleForTesting
+    boolean extractIndexTableStatus(Map<String, String> options, IteratorEnvironment iterEnv) {
         if (options.get(IS_INDEX_TABLE_OPTION_NAME) != null) {
             return Boolean.valueOf(options.get(IS_INDEX_TABLE_OPTION_NAME));
         } else if (iterEnv != null && iterEnv.getConfig() != null) {
@@ -320,6 +330,7 @@ public class LatestVersionFilter extends Filter {
      * Encapsulates the information for the filtering logic for a data type
      */
 @VisibleForTesting
+static
     class VersionFilterConfiguration {
         public long timestampVersion;
         public Mode mode;
